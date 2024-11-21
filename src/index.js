@@ -45,7 +45,7 @@ class VersionFile {
     );
   }
 
-  apply() {
+  apply(compiler) {
     // If there's both an inline template and a template file defined, favour the template file
     let template;
 
@@ -82,7 +82,9 @@ class VersionFile {
     const content = render(template, this.data);
 
     // Write file to disk
-    writeFile(this.options.output, content, this.options.verbose);
+    compiler.hooks.afterEmit.tap('VersionPlugin', () => {
+      writeFile(this.options.output, content, this.options.verbose);
+    });
   }
 }
 
